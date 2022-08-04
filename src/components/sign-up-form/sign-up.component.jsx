@@ -46,7 +46,7 @@ setFormFields({...formFilends, [name]: value})
 
     return(
         <div className="sign-up-container">
-            <h2> Dont hav an accout?</h2>
+            <h2> I do not have an accout?</h2>
         <span>Sign up with your email and password</span>
         <form onSubmit={handeleSubmit}>
             <FormInput label="Display name" type='text' required onChange={handleChange} name="displayName" value={displayName}/>
