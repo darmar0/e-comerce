@@ -1,18 +1,20 @@
-import { useState } from "react"
+import { useState} from "react"
 import FormInput from "../form-input/form-input.component"
 import {signInUserWithEmailAndPassword, createUserDocFromAuth, signInWidthGooglePopup} from "../../utilites/firebase/firebase.utils"
 import Button from "../button/button.component"
 import "./sign-in.styles.scss"
-import { toBePartiallyChecked } from "@testing-library/jest-dom/dist/matchers"
-
 
 const defaultFormFieds = {
     email: '',
     password: '',
    }
+
+
 const SignIn = () => {
+
   const [formFields, setFormFields] = useState(defaultFormFieds);
   const {email, password} = formFields;
+
 
 const handleChange = (event) => {
     const {name, value} = event.target;
@@ -22,15 +24,14 @@ const resetFormFields = () => {
     setFormFields(defaultFormFieds);
 }
 const signInWidthGooge = async () => {
-    const {user} = await signInWidthGooglePopup();
-    const userDocRef = await createUserDocFromAuth(user);
+    const res = await signInWidthGooglePopup();
+    // const userDocRef = await createUserDocFromAuth(res.user);// MOVED TO CONTEXT
 }
 const handeleSubmit = async(event) => {
     event.preventDefault();
 
         try{
-            const response = await signInUserWithEmailAndPassword(email, password);
-            console.log(response)
+            const {user} = await signInUserWithEmailAndPassword(email, password);
             resetFormFields();
            }catch(error){
             switch(error.code){
