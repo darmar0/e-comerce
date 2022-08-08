@@ -12,7 +12,7 @@ export const UserProvider = ({children}) =>{
     const value = {currentUser, setCurrentUser};
 
     useEffect(()=> {
-        const unsabscribe = onAuthStateChangedListener((user)=>{ // LISTENING AUTH STATE CHANGE
+        const unsabscribe = onAuthStateChangedListener(async(user)=>{ // LISTENING AUTH STATE CHANGE
             if(user){
              await createUserDocFromAuth(user); //GOOGLE SIGN IN
             }
