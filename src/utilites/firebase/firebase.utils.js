@@ -9,7 +9,16 @@ import {
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  writeBatch,
+  query,
+  getDocs,
+} from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDk2lZgV2SiGkJBPG8FxWCCcbOnvNmnrgM",
@@ -34,6 +43,40 @@ export const signInWidthGoogleRedirect = () =>
   signInWithRedirect(auth, googleProvider);
 
 export const db = getFirestore();
+
+export const addCollectionDocuments = async (
+  collectionKey,
+  objectsToAdd,
+  field
+) => {
+  const collectionRef = collection(db, collectionKey);
+  const batch = writeBatch(db);
+
+  objectsToAdd.forEach((object) => {
+    const docRef = doc(collectionRef, object[field].toLowerCase());
+    batch.set(docRef, object);
+  });
+
+  await batch.commit();
+  console.log("Collection DONE");
+};
+
+export const getCollectionDocuments = async () => {
+  const collectionRef = collection(db, "categories");
+  const q = query(collectionRef);
+  const querySnapShot = await getDocs(q);
+
+  //CREATING A HASHTABLE //
+  const categoryMap = querySnapShot.docs.reduce((acc, docSnapShot) => {
+    const { title, items } = docSnapShot.data();
+    //acc at the title value is gona be items//
+    acc[title.toLowerCase()] = items;
+
+    return acc;
+  }, {});
+
+  return categoryMap;
+};
 
 export const createUserDocFromAuth = async (userAuth, additionalInfo) => {
   const userDocRef = doc(db, "users", userAuth.uid);
